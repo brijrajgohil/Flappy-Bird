@@ -78,6 +78,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
+        if gameover == 0 {
+            bird.physicsBody?.velocity = CGVectorMake(0, 0)
+            bird.physicsBody?.applyImpulse(CGVectorMake(0, 50))
+            
+        }
+        else {
+            score = 0
+            scorelabel.text = "0"
+            movingobjects.removeAllChildren()
+            makeBackground()
+            bird.position = CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame))
+            bird.physicsBody?.velocity = CGVectorMake(0, 0)
+            labelholder.removeAllChildren()
+            gameover = 0
+            movingobjects.speed = 1
+        }
         
         
     }
@@ -150,7 +166,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didBeginContact(contact: SKPhysicsContact) {
         if contact.bodyA.categoryBitMask == gapgroup || contact.bodyB.categoryBitMask == gapgroup {
-            
+            score++
+            scorelabel.text = "\(score)"
+        }
+        else {
+            if gameover == 0 {
+                gameover = 1
+                movingobjects.speed = 0
+                gameoverlabel.fontName = "Helvetica"
+                gameoverlabel.text = "Game Over! Tap to play again"
+                gameoverlabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
+                labelholder.addChild(gameoverlabel)
+            }
         }
     }
     
